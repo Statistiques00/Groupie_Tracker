@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Groupie Tracker</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1><a href="/">Groupie Tracker</a></h1>
+      <div class="header-controls">
+        <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+  <main class="container">
+    {{ template "content" . }}
+  </main>
+  <footer class="container">
+    <small>Client léger + Go backend · Pas de dépendances externes</small>
+  </footer>
+  <script src="/static/script.js"></script>
+</body>
+</html>

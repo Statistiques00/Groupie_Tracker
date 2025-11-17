@@ -1,0 +1,35 @@
+{{ define "content" }}
+<article class="artist-detail">
+  <div class="artist-header">
+    <img src="{{ .Image }}" alt="{{ .Name }}">
+    <div class="artist-meta">
+      <h2>{{ .Name }}</h2>
+      <p><strong>First album:</strong> {{ .FirstAlbum }}</p>
+      <p><strong>Creation date:</strong> {{ .CreationDate }}</p>
+    </div>
+  </div>
+
+  <section>
+    <h3>Membres</h3>
+    <ul>
+      {{ range .Members }}<li>{{ . }}</li>{{ end }}
+    </ul>
+  </section>
+
+  <section>
+    <h3>Concerts / Relations</h3>
+    {{ if .Relations }}
+      {{ range $loc, $dates := .Relations }}
+        <h4>{{ $loc }}</h4>
+        <ul>
+          {{ range $dates }}<li>{{ . }}</li>{{ end }}
+        </ul>
+      {{ end }}
+    {{ else }}
+      <p>Aucune information de concerts disponible.</p>
+    {{ end }}
+  </section>
+
+  <p><a href="/">← Retour à la liste</a></p>
+</article>
+{{ end }}
