@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<!--
+  Groupie Tracker - 404 Not Found
+
+  Displays a friendly message when an artist or page cannot be found.
+-->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Introuvable | Groupie Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="error-container">
+      <div class="error-bg-circle one"></div>
+      <div class="error-bg-circle two"></div>
+      <div style="position: relative; z-index: 1;">
+        <div class="error-code">404</div>
+        <div class="error-message">Artiste introuvable</div>
+        <p style="margin-top: 0.5rem; color: hsl(var(--muted-foreground));">
+          Il semble que cet artiste ait quitté la tournée. Revenons sur la bonne route !
+        </p>
+        <div class="error-actions">
+          <button class="btn btn-primary" onclick="window.location.href='/'">Retour à l'accueil</button>
+          <button class="btn btn-outline" onclick="window.location.href='/relations'">Voir les données</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

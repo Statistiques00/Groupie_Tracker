@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<!--
+  Groupie Tracker - 500 Internal Server Error
+-->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>500 - Erreur serveur | Groupie Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="error-container">
+      <div class="error-bg-circle one" style="background: hsl(var(--destructive));"></div>
+      <div class="error-bg-circle two"></div>
+      <div style="position: relative; z-index: 1;">
+        <div class="error-code">500</div>
+        <div class="error-message">Erreur serveur</div>
+        <p style="margin-top: 0.5rem; color: hsl(var(--muted-foreground));">
+          Oups ! Nos serveurs ont joué une fausse note. Pas d'inquiétude, on réunit le groupe.
+        </p>
+        <div class="error-actions">
+          <button class="btn btn-primary" onclick="window.location.reload()">Réessayer</button>
+          <button class="btn btn-outline" onclick="window.location.href='/'">Retour à l'accueil</button>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

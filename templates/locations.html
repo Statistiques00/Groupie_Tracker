@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<!--
+  Groupie Tracker - Locations page
+-->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lieux | Groupie Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="site-nav">
+      <div class="container nav-bar">
+        <a class="brand font-display gradient-text" href="/">Groupie Tracker</a>
+        <nav class="nav-links">
+          <a href="/dates">Chronologie</a>
+          <a href="/locations" aria-current="page">Lieux</a>
+          <a href="/relations">Relations</a>
+        </nav>
+        <a class="btn btn-outline btn-small" href="/">Retour à l'accueil</a>
+      </div>
+    </header>
+
+    <section class="page-hero">
+      <div class="animated-gradient hero-backdrop"></div>
+      <div class="container page-hero-content">
+        <p class="eyebrow">Là où la musique se pose</p>
+        <h1 class="font-display">Lieux de tournée</h1>
+        <p class="hero-lead">Organisez les concerts par pays et par ville.</p>
+      </div>
+    </section>
+
+    <main class="container page">
+      <div class="filter-bar glass">
+        <div class="filter-group">
+          <label for="loc-country">Pays</label>
+          <select id="loc-country" class="input select">
+            <option value="">Tous les pays</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="loc-artist">Artiste</label>
+          <select id="loc-artist" class="input select">
+            <option value="">Tous les artistes</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="loc-search">Ville</label>
+          <input id="loc-search" class="input" type="text" placeholder="Rechercher une ville" />
+        </div>
+      </div>
+
+      <div id="locations-list" class="grid grid-1 grid-2 grid-3"></div>
+      <p id="locations-empty" class="muted" style="display: none; margin-top: 1rem;">Aucun lieu ne correspond à vos filtres.</p>
+    </main>
+
+    <script src="js/locations.js"></script>
+  </body>
+</html>

@@ -1,35 +1,67 @@
-{{ define "content" }}
-<article class="artist-detail">
-  <div class="artist-header">
-    <img src="{{ .Image }}" alt="{{ .Name }}">
-    <div class="artist-meta">
-      <h2>{{ .Name }}</h2>
-      <p><strong>First album:</strong> {{ .FirstAlbum }}</p>
-      <p><strong>Creation date:</strong> {{ .CreationDate }}</p>
-    </div>
-  </div>
+<!DOCTYPE html>
+<!--
+  Groupie Tracker - Artist detail page
 
-  <section>
-    <h3>Membres</h3>
-    <ul>
-      {{ range .Members }}<li>{{ . }}</li>{{ end }}
-    </ul>
-  </section>
+  Displays detailed information about a single artist, including
+  band members and tour dates. Data is pulled from the Go backend
+  using plain JavaScript.
+-->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Artiste - Groupie Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="site-nav">
+      <div class="container nav-bar">
+        <a class="brand font-display gradient-text" href="/">Groupie Tracker</a>
+        <nav class="nav-links">
+          <a href="/dates">Chronologie</a>
+          <a href="/locations">Lieux</a>
+          <a href="/relations">Relations</a>
+        </nav>
+        <a class="btn btn-outline btn-small" href="/">Retour à l'accueil</a>
+      </div>
+    </header>
 
-  <section>
-    <h3>Concerts / Relations</h3>
-    {{ if .Relations }}
-      {{ range $loc, $dates := .Relations }}
-        <h4>{{ $loc }}</h4>
-        <ul>
-          {{ range $dates }}<li>{{ . }}</li>{{ end }}
-        </ul>
-      {{ end }}
-    {{ else }}
-      <p>Aucune information de concerts disponible.</p>
-    {{ end }}
-  </section>
+    <header id="artist-header" class="artist-header">
+      <div id="artist-header-overlay" class="artist-header-overlay"></div>
+      <div id="artist-header-content" class="artist-header-content"></div>
+    </header>
 
-  <p><a href="/">← Retour à la liste</a></p>
-</article>
-{{ end }}
+    <main class="container page">
+      <section id="members-section" class="members-section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Composition</p>
+            <h2 class="font-display">Membres du groupe</h2>
+          </div>
+          <a class="text-link" href="/">Retour aux artistes</a>
+        </div>
+        <div id="members-grid" class="members-grid"></div>
+      </section>
+
+      <section id="concerts-section" class="concerts-section">
+        <div class="concerts-header">
+          <div>
+            <p class="eyebrow">Programme de tournée</p>
+            <h2 class="font-display" style="font-size: 2rem;">Dates de tournée</h2>
+          </div>
+          <div class="toggle-btns">
+            <button id="btn-list" class="active" type="button">Vue liste</button>
+            <button id="btn-timeline" type="button">Chronologie</button>
+          </div>
+        </div>
+        <div id="concerts-list" class="concert-list"></div>
+        <div id="concerts-timeline" class="timeline" style="display: none;"></div>
+      </section>
+    </main>
+
+    <script src="js/artist.js"></script>
+  </body>
+</html>

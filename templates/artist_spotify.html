@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!--
+  Groupie Tracker - Spotify artist detail page
+
+  Mirrors the visual language of the main site while pulling data from the
+  backend proxy to Spotify. Animations, gradients and typography remain
+  consistent with the ultra modern theme.
+-->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Artiste Spotify - Groupie Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="site-nav">
+      <div class="container nav-bar">
+        <a class="brand font-display gradient-text" href="/">Groupie Tracker</a>
+        <nav class="nav-links">
+          <a href="/dates">Chronologie</a>
+          <a href="/locations">Lieux</a>
+          <a href="/relations">Relations</a>
+        </nav>
+        <a class="btn btn-outline btn-small" href="/">Retour à l'accueil</a>
+      </div>
+    </header>
+
+    <header id="spotify-header" class="artist-header">
+      <div class="artist-header-overlay"></div>
+      <div id="spotify-hero-content" class="artist-header-content"></div>
+    </header>
+
+    <main class="container page">
+      <section class="members-section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Données du profil</p>
+            <h2 class="font-display">Analyses Spotify</h2>
+          </div>
+          <a id="open-spotify-link" class="btn btn-outline btn-small" href="#" target="_blank" rel="noreferrer">Ouvrir dans Spotify</a>
+        </div>
+        <div id="spotify-stats" class="grid grid-1 grid-3"></div>
+      </section>
+
+      <section class="members-section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Genres</p>
+            <h2 class="font-display" style="font-size: 1.5rem;">ADN musical</h2>
+          </div>
+        </div>
+        <div id="spotify-genres" class="pill-row"></div>
+      </section>
+    </main>
+
+    <script src="js/artist_spotify.js"></script>
+  </body>
+</html>

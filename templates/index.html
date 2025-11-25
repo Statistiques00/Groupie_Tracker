@@ -1,20 +1,114 @@
-{{ define "content" }}
-<section class="search">
-    <form id="search-form" action="/search" method="get" onsubmit="return false;">
-        <input id="search" name="q" type="search" placeholder="Rechercher un artiste..." autocomplete="off">
-    </form>
-</section>
+<!DOCTYPE html>
+<!--
+  Groupie Tracker - Home page
 
-<section id="artists" class="grid">
-    {{- range .Artists }}
-    <article class="card">
-        <a href="/artist?id={{ .ID }}">
-            <img src="{{ .Image }}" alt="{{ .Name }}">
-            <h3>{{ .Name }}</h3>
-        </a>
-    </article>
-    {{- else }}
-    <p>Aucun artiste disponible pour le moment.</p>
-    {{- end }}
-</section>
-{{ end }}
+  Static HTML that keeps the dark, glossy look of the existing design.
+  Data is loaded via the Go backend (api/artists) and injected with
+  plain JavaScript.
+-->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Groupie Tracker - Découvrez les artistes &amp; concerts</title>
+    <meta name="description" content="Explorez les artistes, découvrez leur parcours et suivez leurs concerts dans le monde entier avec Groupie Tracker." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="site-nav">
+      <div class="container nav-bar">
+        <a class="brand font-display gradient-text" href="/">Groupie Tracker</a>
+        <nav class="nav-links">
+          <a href="/dates">Chronologie</a>
+          <a href="/locations">Lieux</a>
+          <a href="/relations">Relations</a>
+        </nav>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="animated-gradient hero-backdrop"></div>
+      <div class="error-bg-circle one"></div>
+      <div class="error-bg-circle two"></div>
+      <div class="container hero-content">
+        <div class="title">
+          <span class="gradient-primary hero-badge">GT</span>
+          <h1 class="gradient-text font-display">Groupie Tracker</h1>
+        </div>
+        <p class="hero-lead fade-in">
+          Découvrez des artistes, explorez leur parcours et suivez leurs concerts partout dans le monde.
+        </p>
+        <form id="search-form" class="search-card glass glow-primary fade-in" aria-label="Rechercher des artistes">
+          <div class="search-row">
+            <input id="search-input" type="text" class="input" placeholder="Rechercher des artistes..." aria-label="Rechercher" />
+            <button type="submit" id="search-btn" class="btn btn-primary">
+              Rechercher
+            </button>
+          </div>
+          <div class="toggle-btns source-toggle" role="group" aria-label="Source de recherche">
+            <button type="button" class="source-btn" data-source="groupie">Groupie Tracker</button>
+            <button type="button" class="source-btn active" data-source="all">Tous</button>
+            <button type="button" class="source-btn" data-source="spotify">Spotify</button>
+          </div>
+          <input type="hidden" id="source-input" value="all" />
+          <p id="error-message" class="form-error" aria-live="polite"></p>
+        </form>
+        <div class="stats fade-in" id="stats">
+          <div class="stats-item">
+            <span id="artist-count">0</span>&nbsp;Artistes
+          </div>
+          <div class="stats-item">
+            Tournées mondiales
+          </div>
+          <div class="stats-item">
+            Mises à jour en direct
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <section class="container section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Parcourez le catalogue</p>
+            <h2 class="font-display">Artistes mis en avant</h2>
+          </div>
+          <a class="text-link" href="/relations">Voir les relations</a>
+        </div>
+        <div id="artists-container" class="grid grid-1 grid-2 grid-3"></div>
+      </section>
+
+      <section class="container section">
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">Outils rapides</p>
+            <h3 class="font-display" style="font-size: 1.5rem;">Naviguer dans les données</h3>
+          </div>
+        </div>
+        <div class="grid grid-1 grid-2 grid-3">
+          <a class="info-card hover-lift" href="/dates">
+            <p class="eyebrow">Chronologie</p>
+            <h4>Dates de concert</h4>
+            <p>Faites défiler tous les concerts par ordre chronologique avec des filtres par année et par pays.</p>
+          </a>
+          <a class="info-card hover-lift" href="/locations">
+            <p class="eyebrow">Prêt pour la carte</p>
+            <h4>Lieux</h4>
+            <p>Voyez où les artistes se produisent, regroupés par ville et pays avec les décomptes.</p>
+          </a>
+          <a class="info-card hover-lift" href="/relations">
+            <p class="eyebrow">Couche de données</p>
+            <h4>Relations</h4>
+            <p>Inspectez le lien entre les artistes, leurs dates et leurs lieux de tournée.</p>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <script src="js/index.js"></script>
+  </body>
+</html>

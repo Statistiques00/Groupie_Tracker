@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!--
+  Groupie Tracker - Concert timeline page
+-->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chronologie des concerts | Groupie Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="site-nav">
+      <div class="container nav-bar">
+        <a class="brand font-display gradient-text" href="/">Groupie Tracker</a>
+        <nav class="nav-links">
+          <a href="/dates" aria-current="page">Chronologie</a>
+          <a href="/locations">Lieux</a>
+          <a href="/relations">Relations</a>
+        </nav>
+        <a class="btn btn-outline btn-small" href="/">Retour à l'accueil</a>
+      </div>
+    </header>
+
+    <section class="page-hero">
+      <div class="animated-gradient hero-backdrop"></div>
+      <div class="container page-hero-content">
+        <p class="eyebrow">Chronologie en direct</p>
+        <h1 class="font-display">Chronologie des concerts</h1>
+        <p class="hero-lead">Parcourez toutes les dates de concert issues de l'API avec un filtrage en temps réel.</p>
+        <div class="pill-row">
+          <span class="pill">Propulsé par AJAX</span>
+          <span class="pill">Filtrable</span>
+          <span class="pill">Chronologique</span>
+        </div>
+      </div>
+    </section>
+
+    <main class="container page">
+      <div class="filter-bar glass">
+        <div class="filter-group">
+          <label for="filter-year">Année</label>
+          <select id="filter-year" class="input select">
+            <option value="">Toutes les années</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-country">Pays</label>
+          <select id="filter-country" class="input select">
+            <option value="">Tous les pays</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="filter-search">Artiste ou ville</label>
+          <input id="filter-search" class="input" type="text" placeholder="Rechercher un artiste ou une ville" />
+        </div>
+      </div>
+
+      <div id="timeline-events" class="timeline"></div>
+      <p id="events-empty" class="muted" style="display: none; margin-top: 1rem;">Aucun événement ne correspond à vos filtres.</p>
+    </main>
+
+    <script src="js/dates.js"></script>
+  </body>
+</html>
