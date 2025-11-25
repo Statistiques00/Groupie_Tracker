@@ -64,6 +64,9 @@ func (a *App) routes() http.Handler {
 	mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir(filepath.Join(a.staticDir, "js")))))
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(a.staticDir))))
 
+	// Favicon: serve favicon.ico from project root if present, otherwise fall back to common static locations
+	mux.HandleFunc("/favicon.ico", a.handleFavicon)
+
 	// API endpoints
 	mux.HandleFunc("/api/artists", a.handleAPIArtists)
 	mux.HandleFunc("/api/artists/", a.handleAPIArtistByID)
@@ -124,4 +127,26 @@ func main() {
 	if err := srv.ListenAndServe(); err != nil && !strings.Contains(err.Error(), "Server closed") {
 		log.Fatalf("server error: %v", err)
 	}
+}
+
+// handleFavicon tries to serve a favicon from several locations.
+// Priority:
+// 1. ./favicon.ico (project root)
+// 2. static/image/grouper_tracke.ico
+// 3. static/image/favicon.ico
+// If none exist it returns 404.
+func (a *App) handleFavicon(w http.ResponseWriter, r *http.Request) {
+	// candidate paths
+	candidates := []string{
+		"favicon.ico",
+		filepath.Join(a.staticDir, "image", "grouper_tracke.ico"),
+		filepath.Join(a.staticDir, "image", "favicon.ico"),
+	}
+	for _, p := range candidates {
+		if _, err := os.Stat(p); err == nil {
+			http.ServeFile(w, r, p)
+			return
+		}
+	}
+	http.NotFound(w, r)
 }

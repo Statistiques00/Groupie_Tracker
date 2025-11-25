@@ -218,6 +218,9 @@ a {
   font-weight: 700;
 }
 
+/* Logo inside .brand */
+.brand .logo { width:48px; height:48px; object-fit:contain; display:inline-block; vertical-align:middle; margin-right:0.5rem }
+
 .btn-small {
   padding: 0.5rem 0.75rem;
   font-size: 0.9rem;
