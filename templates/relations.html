@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<!--
+  Groupie Tracker - Relations page
+-->
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relations | Groupie Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="site-nav">
+      <div class="container nav-bar">
+        <a class="brand font-display gradient-text" href="/">Groupie Tracker</a>
+        <nav class="nav-links">
+          <a href="/dates">Chronologie</a>
+          <a href="/locations">Lieux</a>
+          <a href="/relations" aria-current="page">Relations</a>
+        </nav>
+        <a class="btn btn-outline btn-small" href="/">Retour à l'accueil</a>
+      </div>
+    </header>
+
+    <section class="page-hero">
+      <div class="animated-gradient hero-backdrop"></div>
+      <div class="container page-hero-content">
+        <p class="eyebrow">Connexions de données</p>
+        <h1 class="font-display">Relations entre artistes</h1>
+        <p class="hero-lead">Explorez comment les artistes, les dates et les lieux se connectent.</p>
+      </div>
+    </section>
+
+    <main class="container page">
+      <div class="filter-bar glass">
+        <div class="filter-group">
+          <label for="rel-artist">Artiste</label>
+          <select id="rel-artist" class="input select">
+            <option value="">Tous les artistes</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="rel-location">Lieu</label>
+          <input id="rel-location" class="input" type="text" placeholder="Filtrer par ville ou pays" />
+        </div>
+      </div>
+
+      <div id="relations-list" class="accordion"></div>
+      <p id="relations-empty" class="muted" style="display: none; margin-top: 1rem;">Aucune relation ne correspond à vos filtres.</p>
+    </main>
+
+    <script src="js/relations.js"></script>
+  </body>
+</html>
