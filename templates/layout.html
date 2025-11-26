@@ -5,12 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Groupie Tracker</title>
   <link rel="stylesheet" href="/static/css/styles.css">
-  <!-- Favicon principal servi à la racine -->
-  <!-- preferer la racine (serveur) et fournir un fallback relatif -->
+  <!-- Favicon : privilégier le fichier servi à la racine, fallback Data URI SVG -->
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
-  <link rel="icon" href="favicon.ico" type="image/x-icon"> <!-- fallback relatif -->
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" href="/favicon.ico">
+  <!-- Data URI fallback (simple carré bleu) pour s'assurer d'un icône si /favicon.ico n'est pas servi -->
+  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect width='16' height='16' fill='%23007ACC'/></svg>">
 </head>
 <body>
   <header>
@@ -30,5 +29,5 @@
     <small>Client léger + Go backend · Pas de dépendances externes</small>
   </footer>
   <script src="/static/js/index.js"></script>
-</body>
+  </body>
 </html>
