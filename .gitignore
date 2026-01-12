@@ -1,0 +1,4 @@
+# Ignore generated API client code
+/api_client.go
+# Ignore build artifacts
+spotify_client
