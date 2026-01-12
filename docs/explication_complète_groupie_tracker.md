@@ -164,3 +164,13 @@ Scripts (JS) :
 - Visualisations : cartes géographiques (Leaflet/Mapbox), graphes de relations, histogrammes de tournées.  
 - Robustesse : stockage cache persistant, circuit breaker pour Spotify, métriques/observabilité (Prometheus).  
 - Sécurité : rate limiting léger, validation stricte des paramètres de requête.
+
+## 10. Modifications recentes (conformite sujet)
+- Suppression de la dependance non-stdlib `godotenv` : lecture des variables d'environnement via `os.Getenv` uniquement ; README mis a jour pour l'usage des variables Spotify.
+- Robustesse serveur : ajout d'un middleware `recover` (panic -> 500 + log) et de timeouts sur `http.Server` (ReadHeader/Read/Write/Idle).
+- Correction du bug a froid sur `/api/artists/{id}` : rafraichissement du cache via `ensureCache` et reponse 503 si cache vide.
+- Mapping des erreurs Spotify : distinction 404 (artiste absent) vs 502/503 (erreur amont) via erreurs typees.
+- Validation stricte des parametres : `year`, `limit`, `id` renvoient 400 en cas d'entree invalide.
+- Reduction du risque XSS : remplacement de `innerHTML` par `textContent`/DOM pour les donnees externes (index/relations/locations/artist_spotify).
+- Encodage : corrections des chaines utilisateurs (accents) dans les handlers et scripts JS.
+- Qualite minimale : `gofmt` applique aux fichiers Go, suppression du binaire commite, ajout de `.gitignore`.

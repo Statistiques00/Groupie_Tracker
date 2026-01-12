@@ -108,3 +108,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     eventsEmpty.style.display = 'block';
   }
 });
+

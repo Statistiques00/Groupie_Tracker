@@ -84,16 +84,28 @@ function renderRelations(views) {
     const header = document.createElement('button');
     header.className = 'accordion-header';
     header.setAttribute('aria-expanded', index === 0 ? 'true' : 'false');
-    header.innerHTML = `
-      <div>
-        <p class="eyebrow">Artiste #${view.id}</p>
-        <h4>${view.name}</h4>
-      </div>
-      <div class="badge-row">
-        <span class="badge">${view.entries.length} lieux</span>
-        <span class="badge">${view.entries.reduce((acc, e) => acc + e.dates.length, 0)} dates</span>
-      </div>
-    `;
+    const headerMain = document.createElement('div');
+    const eyebrow = document.createElement('p');
+    eyebrow.className = 'eyebrow';
+    eyebrow.textContent = `Artiste #${view.id}`;
+    const title = document.createElement('h4');
+    title.textContent = view.name;
+    headerMain.appendChild(eyebrow);
+    headerMain.appendChild(title);
+
+    const badgeRow = document.createElement('div');
+    badgeRow.className = 'badge-row';
+    const locationsBadge = document.createElement('span');
+    locationsBadge.className = 'badge';
+    locationsBadge.textContent = `${view.entries.length} lieux`;
+    const datesBadge = document.createElement('span');
+    datesBadge.className = 'badge';
+    datesBadge.textContent = `${view.entries.reduce((acc, e) => acc + e.dates.length, 0)} dates`;
+    badgeRow.appendChild(locationsBadge);
+    badgeRow.appendChild(datesBadge);
+
+    header.appendChild(headerMain);
+    header.appendChild(badgeRow);
 
     const body = document.createElement('div');
     body.className = 'accordion-body';
@@ -110,9 +122,12 @@ function renderRelations(views) {
 
       const dates = document.createElement('div');
       dates.className = 'relation-dates';
-      dates.innerHTML = entry.dates
-        .map((d) => `<span class="badge badge-soft">${d}</span>`)
-        .join('');
+      entry.dates.forEach((d) => {
+        const badge = document.createElement('span');
+        badge.className = 'badge badge-soft';
+        badge.textContent = d;
+        dates.appendChild(badge);
+      });
 
       card.appendChild(title);
       card.appendChild(dates);
@@ -156,3 +171,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     relationsEmpty.style.display = 'block';
   }
 });
+

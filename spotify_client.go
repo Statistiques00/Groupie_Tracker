@@ -20,6 +20,11 @@ const (
 	spotifyArtistURL = "https://api.spotify.com/v1/artists/"
 )
 
+var (
+	ErrSpotifyNotFound = errors.New("spotify artist not found")
+	ErrSpotifyUpstream = errors.New("spotify upstream error")
+)
+
 // SpotifyArtist mirrors the subset of fields we need from the Spotify API.
 type SpotifyArtist struct {
 	ID         string           `json:"id"`
@@ -86,11 +91,11 @@ func (c *SpotifyClient) token(ctx context.Context) (string, error) {
 
 	resp, err := c.http().Do(req)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("%w: %v", ErrSpotifyUpstream, err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return "", fmt.Errorf("spotify token request failed: %d", resp.StatusCode)
+		return "", fmt.Errorf("%w: token request failed: %d", ErrSpotifyUpstream, resp.StatusCode)
 	}
 	var payload struct {
 		AccessToken string `json:"access_token"`
@@ -141,11 +146,11 @@ func (c *SpotifyClient) SearchArtists(ctx context.Context, query string, limit i
 
 	resp, err := c.http().Do(req)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%w: %v", ErrSpotifyUpstream, err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, fmt.Errorf("spotify search failed: %d", resp.StatusCode)
+		return nil, fmt.Errorf("%w: search failed: %d", ErrSpotifyUpstream, resp.StatusCode)
 	}
 
 	var payload struct {
@@ -192,14 +197,14 @@ func (c *SpotifyClient) GetArtist(ctx context.Context, id string) (SpotifyArtist
 
 	resp, err := c.http().Do(req)
 	if err != nil {
-		return SpotifyArtist{}, err
+		return SpotifyArtist{}, fmt.Errorf("%w: %v", ErrSpotifyUpstream, err)
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode == http.StatusNotFound {
-		return SpotifyArtist{}, fmt.Errorf("spotify artist %s not found", trimmed)
+		return SpotifyArtist{}, fmt.Errorf("%w: %s", ErrSpotifyNotFound, trimmed)
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return SpotifyArtist{}, fmt.Errorf("spotify artist fetch failed: %d", resp.StatusCode)
+		return SpotifyArtist{}, fmt.Errorf("%w: artist fetch failed: %d", ErrSpotifyUpstream, resp.StatusCode)
 	}
 
 	var artist SpotifyArtist
@@ -207,7 +212,7 @@ func (c *SpotifyClient) GetArtist(ctx context.Context, id string) (SpotifyArtist
 		return SpotifyArtist{}, err
 	}
 	if strings.TrimSpace(artist.Name) == "" || len(artist.Images) == 0 {
-		return SpotifyArtist{}, errors.New("spotify returned incomplete artist data")
+		return SpotifyArtist{}, fmt.Errorf("%w: incomplete artist data", ErrSpotifyUpstream)
 	}
 	return artist, nil
 }

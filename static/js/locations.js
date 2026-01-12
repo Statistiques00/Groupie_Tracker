@@ -59,10 +59,14 @@ function renderLocations(locations) {
 
     const meta = document.createElement('div');
     meta.className = 'location-meta';
-    meta.innerHTML = `
-      <span class="badge">${loc.eventCount || 0} concerts</span>
-      <span class="badge">Artiste #${loc.artistId}</span>
-    `;
+    const countBadge = document.createElement('span');
+    countBadge.className = 'badge';
+    countBadge.textContent = `${loc.eventCount || 0} concerts`;
+    const artistBadge = document.createElement('span');
+    artistBadge.className = 'badge';
+    artistBadge.textContent = `Artiste #${loc.artistId}`;
+    meta.appendChild(countBadge);
+    meta.appendChild(artistBadge);
 
     card.appendChild(title);
     card.appendChild(artist);
@@ -103,3 +107,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     locationsEmpty.style.display = 'block';
   }
 });
+
