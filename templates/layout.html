@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Groupie Tracker</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+  <!-- Favicon : privilégier le fichier servi à la racine, fallback Data URI SVG -->
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <!-- Data URI fallback (simple carré bleu) pour s'assurer d'un icône si /favicon.ico n'est pas servi -->
+  <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><rect width='16' height='16' fill='%23007ACC'/></svg>">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="brand">
+        <h1><a href="/">Groupie Tracker</a></h1>
+      </div>
+      <div class="header-controls">
+        <button id="theme-toggle" aria-label="Toggle theme">🌙</button>
+      </div>
+    </div>
+  </header>
+  <main class="container">
+    {{ template "content" . }}
+  </main>
+  <footer class="container">
+    <small>Client léger + Go backend · Pas de dépendances externes</small>
+  </footer>
+  <script src="/static/js/index.js"></script>
+  </body>
+</html>
