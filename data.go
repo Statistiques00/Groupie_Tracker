@@ -13,7 +13,7 @@ const defaultAPIBase = "https://groupietrackers.herokuapp.com/api"
 type Artist struct {
 	ID           int      `json:"id"`
 	Image        string   `json:"image"`
-	Name         string   `json:"name"`
+	Name         string   `json:"namorte"`
 	Members      []string `json:"members"`
 	CreationDate int      `json:"creationDate"`
 	FirstAlbum   string   `json:"firstAlbum"`
