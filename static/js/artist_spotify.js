@@ -3,11 +3,12 @@
 
 function placeholderAvatar(name) {
   const initial = (name || '?').trim().charAt(0).toUpperCase() || '?';
-  return `
-    <div class="artist-placeholder gradient-primary">
-      <span>${initial}</span>
-    </div>
-  `;
+  const wrapper = document.createElement('div');
+  wrapper.className = 'artist-placeholder gradient-primary';
+  const span = document.createElement('span');
+  span.textContent = initial;
+  wrapper.appendChild(span);
+  return wrapper;
 }
 
 async function fetchSpotifyArtist(id) {
@@ -24,29 +25,67 @@ async function fetchSpotifyArtist(id) {
 
 function renderHeader(artist) {
   const header = document.getElementById('spotify-header');
-  const hero = document.getElementById('spotify-hero-content');
-  if (!header || !hero) return;
-  const imageMarkup = artist.image_url
-    ? `<img src="${artist.image_url}" alt="${artist.name}" />`
-    : placeholderAvatar(artist.name);
-  const followerText = artist.followers ? `${Number(artist.followers).toLocaleString()} abonnés` : 'Artiste Spotify';
+  if (!header) return;
+  header.innerHTML = '';
 
-  header.innerHTML = `
-    ${imageMarkup}
-    <div class="artist-header-overlay"></div>
-    <div id="spotify-hero-content" class="artist-header-content">
-      <span class="artist-source badge-spotify">Spotify</span>
-      <h1 class="gradient-text font-display" style="font-size: 3rem; font-weight: 700;">${artist.name}</h1>
-      <div class="artist-info">
-        <span>${followerText}</span>
-        <span>${artist.popularity ? `Popularité ${artist.popularity}` : ''}</span>
-      </div>
-      <div class="pill-row" id="hero-genres"></div>
-      <div style="margin-top: 1rem;">
-        <a class="btn btn-primary" href="https://open.spotify.com/artist/${artist.id}" target="_blank" rel="noreferrer">Ouvrir sur Spotify</a>
-      </div>
-    </div>
-  `;
+  if (artist.image_url) {
+    const img = document.createElement('img');
+    img.src = artist.image_url;
+    img.alt = artist.name || '';
+    header.appendChild(img);
+  } else {
+    header.appendChild(placeholderAvatar(artist.name));
+  }
+
+  const overlay = document.createElement('div');
+  overlay.className = 'artist-header-overlay';
+  header.appendChild(overlay);
+
+  const content = document.createElement('div');
+  content.id = 'spotify-hero-content';
+  content.className = 'artist-header-content';
+
+  const badge = document.createElement('span');
+  badge.className = 'artist-source badge-spotify';
+  badge.textContent = 'Spotify';
+
+  const title = document.createElement('h1');
+  title.className = 'gradient-text font-display';
+  title.style.fontSize = '3rem';
+  title.style.fontWeight = '700';
+  title.textContent = artist.name || '';
+
+  const followerText = artist.followers ? `${Number(artist.followers).toLocaleString()} abonnés` : 'Artiste Spotify';
+  const info = document.createElement('div');
+  info.className = 'artist-info';
+  const followers = document.createElement('span');
+  followers.textContent = followerText;
+  const popularity = document.createElement('span');
+  popularity.textContent = artist.popularity ? `Popularité ${artist.popularity}` : '';
+  info.appendChild(followers);
+  info.appendChild(popularity);
+
+  const pillRow = document.createElement('div');
+  pillRow.className = 'pill-row';
+  pillRow.id = 'hero-genres';
+
+  const actionWrap = document.createElement('div');
+  actionWrap.style.marginTop = '1rem';
+  const link = document.createElement('a');
+  link.className = 'btn btn-primary';
+  link.href = `https://open.spotify.com/artist/${artist.id}`;
+  link.target = '_blank';
+  link.rel = 'noreferrer';
+  link.textContent = 'Ouvrir sur Spotify';
+  actionWrap.appendChild(link);
+
+  content.appendChild(badge);
+  content.appendChild(title);
+  content.appendChild(info);
+  content.appendChild(pillRow);
+  content.appendChild(actionWrap);
+
+  header.appendChild(content);
 
   const heroGenres = document.getElementById('hero-genres');
   if (heroGenres) {
@@ -67,6 +106,7 @@ function renderHeader(artist) {
     }
   }
 }
+
 
 function renderStats(artist) {
   const container = document.getElementById('spotify-stats');
@@ -92,11 +132,18 @@ function renderStats(artist) {
   cards.forEach((card) => {
     const el = document.createElement('div');
     el.className = 'stat-card hover-lift';
-    el.innerHTML = `
-      <div class="stat-label">${card.label}</div>
-      <div class="stat-value">${card.value}</div>
-      <div class="stat-label">${card.helper}</div>
-    `;
+    const label = document.createElement('div');
+    label.className = 'stat-label';
+    label.textContent = card.label;
+    const value = document.createElement('div');
+    value.className = 'stat-value';
+    value.textContent = card.value;
+    const helper = document.createElement('div');
+    helper.className = 'stat-label';
+    helper.textContent = card.helper;
+    el.appendChild(label);
+    el.appendChild(value);
+    el.appendChild(helper);
     container.appendChild(el);
   });
 }
@@ -143,3 +190,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.location.href = '/500';
   }
 });
+
+
+
+
+

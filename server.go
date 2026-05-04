@@ -11,8 +11,6 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
-
-	"github.com/joho/godotenv"
 )
 
 const (
@@ -97,15 +95,11 @@ func (a *App) routes() http.Handler {
 	mux.HandleFunc("/index.html", a.handleRoot)
 	mux.HandleFunc("/", a.handleRoot)
 
-	return loggingMiddleware(mux)
+	return recoverMiddleware(loggingMiddleware(mux))
 }
 
 func main() {
-	// Load environment variables from .env if present. Any variables
-	// set in the environment will take precedence.
-	_ = godotenv.Load()
-
-	// allow overriding defaults via environment variables (or .env)
+	// allow overriding defaults via environment variables
 	addrDefault := defaultAddr
 	if v := os.Getenv("ADDR"); v != "" {
 		addrDefault = v
@@ -143,8 +137,12 @@ func main() {
 	}
 
 	srv := &http.Server{
-		Addr:    *addr,
-		Handler: app.routes(),
+		Addr:              *addr,
+		Handler:           app.routes(),
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       10 * time.Second,
+		WriteTimeout:      15 * time.Second,
+		IdleTimeout:       60 * time.Second,
 	}
 
 	log.Printf("Groupie Tracker backend running at http://localhost%s", *addr)

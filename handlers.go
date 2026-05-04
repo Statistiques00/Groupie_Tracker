@@ -125,7 +125,11 @@ func (a *App) handleAPIArtists(w http.ResponseWriter, r *http.Request) {
 	a.ensureCache(r.Context())
 	q := r.URL.Query()
 	nameFilter := strings.ToLower(strings.TrimSpace(q.Get("name")))
-	yearFilter, _ := strconv.Atoi(q.Get("year"))
+	yearFilter, err := parseYear(q.Get("year"))
+	if err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "année invalide"})
+		return
+	}
 	memberFilter := strings.TrimSpace(q.Get("member"))
 
 	sourceParam := strings.ToLower(strings.TrimSpace(q.Get("source")))
@@ -136,7 +140,14 @@ func (a *App) handleAPIArtists(w http.ResponseWriter, r *http.Request) {
 		includeGroupie = true
 	}
 	unifiedResponse := includeSpotify || sourceParam == "groupie"
-	limitParam, _ := strconv.Atoi(q.Get("limit"))
+	limitParam := 0
+	if limitStr := strings.TrimSpace(q.Get("limit")); limitStr != "" {
+		limitParam, err = strconv.Atoi(limitStr)
+		if err != nil || limitParam < 0 {
+			writeJSON(w, http.StatusBadRequest, map[string]string{"error": "limite invalide"})
+			return
+		}
+	}
 	spotifyLimit := limitParam
 	if spotifyLimit <= 0 {
 		spotifyLimit = 8
@@ -204,6 +215,11 @@ func (a *App) handleAPIArtistByID(w http.ResponseWriter, r *http.Request) {
 	}
 	if !strings.HasPrefix(r.URL.Path, "/api/artists/") {
 		a.renderError(w, http.StatusNotFound)
+		return
+	}
+	a.ensureCache(r.Context())
+	if len(a.cache.Snapshot().Artists) == 0 {
+		writeJSON(w, http.StatusServiceUnavailable, map[string]string{"error": "service indisponible"})
 		return
 	}
 	idStr := strings.Trim(strings.TrimPrefix(r.URL.Path, "/api/artists/"), "/")
@@ -283,7 +299,11 @@ func (a *App) handleAPIDates(w http.ResponseWriter, r *http.Request) {
 	}
 	a.ensureCache(r.Context())
 	q := r.URL.Query()
-	yearFilter, _ := strconv.Atoi(q.Get("year"))
+	yearFilter, err := parseYear(q.Get("year"))
+	if err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "année invalide"})
+		return
+	}
 
 	var filtered []DatesIndex
 	for _, entry := range a.cache.Snapshot().Dates {
@@ -318,7 +338,15 @@ func (a *App) handleAPIRelation(w http.ResponseWriter, r *http.Request) {
 	}
 	a.ensureCache(r.Context())
 	q := r.URL.Query()
-	artistFilter, _ := strconv.Atoi(q.Get("id"))
+	artistFilter := 0
+	if idStr := strings.TrimSpace(q.Get("id")); idStr != "" {
+		parsed, err := strconv.Atoi(idStr)
+		if err != nil {
+			writeJSON(w, http.StatusBadRequest, map[string]string{"error": "identifiant invalide"})
+			return
+		}
+		artistFilter = parsed
+	}
 	relations := a.cache.Snapshot().Relations
 	if artistFilter > 0 {
 		out := make([]Relation, 0, 1)
@@ -345,7 +373,11 @@ func (a *App) handleAPIEvents(w http.ResponseWriter, r *http.Request) {
 	countryFilter := strings.ToLower(strings.TrimSpace(q.Get("country")))
 	cityFilter := strings.ToLower(strings.TrimSpace(q.Get("city")))
 	artistFilter := strings.ToLower(strings.TrimSpace(q.Get("artist")))
-	yearFilter, _ := strconv.Atoi(q.Get("year"))
+	yearFilter, err := parseYear(q.Get("year"))
+	if err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "année invalide"})
+		return
+	}
 
 	filtered := make([]Event, 0, len(events))
 	for _, ev := range events {
@@ -385,7 +417,8 @@ func (a *App) handleAPISpotifyArtist(w http.ResponseWriter, r *http.Request) {
 	artist, err := a.spotify.GetArtist(ctx, id)
 	if err != nil {
 		log.Printf("spotify artist lookup failed: %v", err)
-		writeJSON(w, http.StatusNotFound, map[string]string{"error": "artiste introuvable"})
+		status, message := mapSpotifyError(err)
+		writeJSON(w, status, map[string]string{"error": message})
 		return
 	}
 	view := spotifyArtistDetail{
@@ -398,6 +431,16 @@ func (a *App) handleAPISpotifyArtist(w http.ResponseWriter, r *http.Request) {
 		Source:     sourceSpotify,
 	}
 	writeJSON(w, http.StatusOK, view)
+}
+
+func mapSpotifyError(err error) (int, string) {
+	if errors.Is(err, ErrSpotifyNotFound) {
+		return http.StatusNotFound, "artiste introuvable"
+	}
+	if errors.Is(err, ErrSpotifyUpstream) {
+		return http.StatusBadGateway, "spotify indisponible"
+	}
+	return http.StatusBadGateway, "spotify indisponible"
 }
 
 func (a *App) renderTemplate(w http.ResponseWriter, name string, data interface{}) error {
@@ -419,7 +462,7 @@ func (a *App) renderError(w http.ResponseWriter, status int) {
 
 func methodNotAllowed(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Allow", http.MethodGet)
-	http.Error(w, "méthode non autorisée", http.StatusMethodNotAllowed)
+	http.Error(w, "méthode non autoriséee", http.StatusMethodNotAllowed)
 }
 
 func writeJSON(w http.ResponseWriter, status int, payload interface{}) {
@@ -448,6 +491,18 @@ func loggingMiddleware(next http.Handler) http.Handler {
 		start := time.Now()
 		next.ServeHTTP(w, r)
 		log.Printf("%s %s (%s)", r.Method, r.URL.Path, time.Since(start).Truncate(time.Millisecond))
+	})
+}
+
+func recoverMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Printf("panic recovered: %v", err)
+				http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+			}
+		}()
+		next.ServeHTTP(w, r)
 	})
 }
 

@@ -45,11 +45,12 @@ async function fetchArtists(term) {
 
 function placeholderAvatar(name) {
   const initial = (name || '?').trim().charAt(0).toUpperCase() || '?';
-  return `
-    <div class="artist-placeholder gradient-primary">
-      <span>${initial}</span>
-    </div>
-  `;
+  const wrapper = document.createElement('div');
+  wrapper.className = 'artist-placeholder gradient-primary';
+  const span = document.createElement('span');
+  span.textContent = initial;
+  wrapper.appendChild(span);
+  return wrapper;
 }
 
 function renderArtists(artists) {
@@ -64,52 +65,99 @@ function renderArtists(artists) {
     const metaText = isSpotify
       ? (artist.popularity ? `Pop. ${artist.popularity}` : 'Spotify')
       : (artist.creationDate || '');
+
     const card = document.createElement('div');
     card.className = 'artist-card hover-lift';
     card.addEventListener('click', () => {
       window.location.href = target;
     });
+
     const membersCount = Array.isArray(artist.members) ? artist.members.length : 0;
-    let membersTags = '';
-    if (isSpotify) {
-      const genres = Array.isArray(artist.genres) ? artist.genres.slice(0, 3) : [];
-      if (genres.length > 0) {
-        membersTags = genres.map((g) => `<span class="artist-member-tag">${g}</span>`).join('');
-      } else {
-        membersTags = '<span class="artist-member-tag">Sur Spotify</span>';
-      }
-    } else if (Array.isArray(artist.members)) {
-      const tags = artist.members.slice(0, 3).map((m) => `<span class="artist-member-tag">${m}</span>`);
-      membersTags = tags.join('');
-      if (membersCount > 3) {
-        membersTags += `<span class="artist-member-tag">+${membersCount - 3}</span>`;
-      }
-    }
-    const imageMarkup = imageURL
-      ? `<img src="${imageURL}" alt="${artist.name}" />`
-      : placeholderAvatar(artist.name);
     const leftDetail = isSpotify
       ? (Array.isArray(artist.genres) && artist.genres.length > 0 ? artist.genres[0] : 'Artiste Spotify')
       : `${membersCount} membres`;
     const rightDetail = isSpotify
       ? (artist.popularity ? `Popularité ${artist.popularity}` : '')
       : (albumYear(artist.firstAlbum) || artist.creationDate || '');
-    card.innerHTML = `
-      <div class="artist-media">
-        ${imageMarkup}
-        <span class="artist-source ${badgeClass}">${badgeLabel}</span>
-        <div class="artist-meta">${metaText}</div>
-      </div>
-      <div class="artist-card-content">
-        <h3>${artist.name}</h3>
-        <div class="artist-details-list">
-          <span>${leftDetail}</span>
-          <span>${rightDetail}</span>
-        </div>
-        <div class="artist-members">${membersTags}</div>
-        <button class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">${isSpotify ? 'Voir sur Spotify' : 'Voir les détails'}</button>
-      </div>
-    `;
+
+    const media = document.createElement('div');
+    media.className = 'artist-media';
+    if (imageURL) {
+      const img = document.createElement('img');
+      img.src = imageURL;
+      img.alt = artist.name || '';
+      media.appendChild(img);
+    } else {
+      media.appendChild(placeholderAvatar(artist.name));
+    }
+    const badge = document.createElement('span');
+    badge.className = `artist-source ${badgeClass}`;
+    badge.textContent = badgeLabel;
+    media.appendChild(badge);
+    const meta = document.createElement('div');
+    meta.className = 'artist-meta';
+    meta.textContent = String(metaText);
+    media.appendChild(meta);
+
+    const content = document.createElement('div');
+    content.className = 'artist-card-content';
+    const title = document.createElement('h3');
+    title.textContent = artist.name || '';
+
+    const details = document.createElement('div');
+    details.className = 'artist-details-list';
+    const leftSpan = document.createElement('span');
+    leftSpan.textContent = leftDetail;
+    const rightSpan = document.createElement('span');
+    rightSpan.textContent = rightDetail;
+    details.appendChild(leftSpan);
+    details.appendChild(rightSpan);
+
+    const members = document.createElement('div');
+    members.className = 'artist-members';
+    if (isSpotify) {
+      const genres = Array.isArray(artist.genres) ? artist.genres.slice(0, 3) : [];
+      if (genres.length > 0) {
+        genres.forEach((g) => {
+          const tag = document.createElement('span');
+          tag.className = 'artist-member-tag';
+          tag.textContent = g;
+          members.appendChild(tag);
+        });
+      } else {
+        const tag = document.createElement('span');
+        tag.className = 'artist-member-tag';
+        tag.textContent = 'Sur Spotify';
+        members.appendChild(tag);
+      }
+    } else if (Array.isArray(artist.members)) {
+      artist.members.slice(0, 3).forEach((m) => {
+        const tag = document.createElement('span');
+        tag.className = 'artist-member-tag';
+        tag.textContent = m;
+        members.appendChild(tag);
+      });
+      if (membersCount > 3) {
+        const tag = document.createElement('span');
+        tag.className = 'artist-member-tag';
+        tag.textContent = `+${membersCount - 3}`;
+        members.appendChild(tag);
+      }
+    }
+
+    const button = document.createElement('button');
+    button.className = 'btn btn-primary';
+    button.style.width = '100%';
+    button.style.marginTop = '0.5rem';
+    button.textContent = isSpotify ? 'Voir sur Spotify' : 'Voir les détails';
+
+    content.appendChild(title);
+    content.appendChild(details);
+    content.appendChild(members);
+    content.appendChild(button);
+
+    card.appendChild(media);
+    card.appendChild(content);
     container.appendChild(card);
   });
 }
@@ -185,3 +233,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 });
+
+
